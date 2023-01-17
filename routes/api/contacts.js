@@ -1,25 +1,24 @@
-const express = require('express')
+const express = require("express");
+const Joi = require("joi");
+const validator = require("express-joi-validation").createValidator({});
+const { getContacts, getByIdContact, appendContact, deletContact, updContact } = require("../../controllers/contacts.controller.js");
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+const schema = Joi.object(
+  {
+    name: Joi.string().required(),
+    email: Joi.string().required(),
+    phone: Joi.string().required(),
+  },
+  { abortEarly: false }
+);
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router
+  .get("/", getContacts)
+  .get("/:contactId", getByIdContact)
+  .post("/", validator.body(schema), appendContact)
+  .delete("/:contactId", deletContact)
+  .put("/:contactId",validator.body(schema), updContact);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
-
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
-
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
-
-module.exports = router
+module.exports = router;
