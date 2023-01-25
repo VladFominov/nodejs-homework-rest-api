@@ -1,24 +1,41 @@
 const express = require("express");
-const Joi = require("joi");
+
 const validator = require("express-joi-validation").createValidator({});
-const { getContacts, getByIdContact, appendContact, deletContact, updContact } = require("../../controllers/contacts.controller.js");
+const {
+  getContacts,
+  getByIdContact,
+  appendContact,
+  deletContact,
+  updContact,
+  updateStatusContact,
+} = require("../../controllers/contacts.controller.js");
 
+const {
+  addContactValidationSchema,
+  updateContactValidationSchema,
+  updateStatusContactValidationSchema,
+} = require("../../validation/contacts.validation");
+const  tryCatch = require('../../utils/try-catch');
 const router = express.Router();
-
-const schema = Joi.object(
-  {
-    name: Joi.string().required(),
-    email: Joi.string().required(),
-    phone: Joi.string().required(),
-  },
-  { abortEarly: false }
-);
 
 router
   .get("/", getContacts)
   .get("/:contactId", getByIdContact)
-  .post("/", validator.body(schema), appendContact)
+  .post(
+    "/",
+    validator.body(addContactValidationSchema),
+    tryCatch(appendContact)
+  )
   .delete("/:contactId", deletContact)
-  .put("/:contactId",validator.body(schema), updContact);
+  .put(
+    "/:contactId",
+    validator.body(updateContactValidationSchema),
+    tryCatch(updContact)
+  )
+  .patch(
+    "/:contactId/favorite",
+    validator.body(updateStatusContactValidationSchema),
+    updateStatusContact
+  );
 
 module.exports = router;
