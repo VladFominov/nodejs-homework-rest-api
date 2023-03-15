@@ -1,11 +1,15 @@
 const { Contact } = require("../models/contact.model");
 
-const getContacts = async (req, res, next) => {
-  const contacts = await Contact.find();
+const getContacts = async (req, res) => {
+  const { _id: owner } = req.user;
+  const contacts = await Contact.find({ owner }).populate(
+    "owner",
+    "name email phone"
+  );
   res.json(contacts);
 };
 
-const getByIdContact = async (req, res, next) => {
+const getByIdContact = async (req, res) => {
   try {
     const { contactId } = req.params;
     const contact = await Contact.findById(contactId);
@@ -18,17 +22,13 @@ const getByIdContact = async (req, res, next) => {
   }
 };
 
-const appendContact = async (req, res, next) => {
-  const { name, email, phone } = req.body;
-  const newContact = await Contact.create({
-    name,
-    email,
-    phone,
-  });
+const appendContact = async (req, res) => {
+  const { _id: owner } = req.user;
+  const newContact = await Contact.create({ ...req.body, owner });
   res.json(newContact).status(201);
 };
 
-const deletContact = async (req, res, next) => {
+const deletContact = async (req, res) => {
   try {
     const { contactId } = req.params;
     const contact = await Contact.findByIdAndDelete(contactId);
@@ -41,7 +41,7 @@ const deletContact = async (req, res, next) => {
   }
 };
 
-const updContact = async (req, res, next) => {
+const updContact = async (req, res) => {
   const { contactId } = req.params;
   const updatedContact = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
@@ -49,7 +49,7 @@ const updContact = async (req, res, next) => {
   res.json(updatedContact);
 };
 
-const updateStatusContact = async (req, res, next) => {
+const updateStatusContact = async (req, res) => {
   try {
     const { contactId } = req.params;
     const updatedStatusContact = await Contact.findByIdAndUpdate(

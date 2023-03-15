@@ -16,19 +16,20 @@ const {
   updateStatusContactValidationSchema,
 } = require("../../validation/contacts.validation");
 const  tryCatch = require('../../utils/try-catch');
-const router = express.Router();
+const { isAuthorized } = require("../../controllers/users.controllers.js");
+const contactsRouter = express.Router();
 
-router
-  .get("/", getContacts)
+contactsRouter
+  .get("/", isAuthorized, getContacts)
   .get("/:contactId", getByIdContact)
   .post(
-    "/",
+    "/", isAuthorized,
     validator.body(addContactValidationSchema),
     tryCatch(appendContact)
   )
   .delete("/:contactId", deletContact)
   .put(
-    "/:contactId",
+    "/:contactId",isAuthorized,
     validator.body(updateContactValidationSchema),
     tryCatch(updContact)
   )
@@ -38,4 +39,4 @@ router
     updateStatusContact
   );
 
-module.exports = router;
+module.exports = contactsRouter;
