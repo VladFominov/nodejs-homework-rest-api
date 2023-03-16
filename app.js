@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const contactsRouter = require("./routes/api/contacts");
-
+const usersRouter = require("./routes/api/users");
 mongoose.set("strictQuery", true);
 
 mongoose
@@ -31,6 +31,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.use("/api/contacts", contactsRouter);
+app.use("/api/users", usersRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
