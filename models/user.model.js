@@ -19,12 +19,16 @@ const Users = new Schema(
       default: "starter",
     },
     jwtToken: { token: String },
+    avatarURL: {
+      type: String,
+      required: true,
+    },
   },
+
   { versionKey: false, timestamps: true }
 );
 
 const User = mongoose.model("User", Users);
-
 
 module.exports = {
   User,

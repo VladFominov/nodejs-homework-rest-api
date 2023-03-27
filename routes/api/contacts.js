@@ -16,7 +16,7 @@ const {
   updateStatusContactValidationSchema,
 } = require("../../validation/contacts.validation");
 const  tryCatch = require('../../utils/try-catch');
-const { isAuthorized } = require("../../controllers/users.controllers.js");
+const isAuthorized = require("../../middlewares/isAuthorized");
 const contactsRouter = express.Router();
 
 contactsRouter
